@@ -4,6 +4,17 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.1.0 — 24/09/2026
+
+Ajuste salido de la primera migración, exactamente para lo que sirve versionar.
+
+- **`BASE_ICONS` → `BASE_STROKE`, con otro formato.** Guardaba marcado SVG
+  completo; los sitios guardan arrays de atributos `d`, que es mejor porque deja
+  el grosor, el color y el tamaño del lado del diseño. Se adopta el formato real
+  y se usan los trazos ya probados de kivcode-web.
+- Se suma `WHATSAPP_PATH`: se dibuja relleno y no con trazo, y lo usan todos los
+  sitios.
+
 ## v1.0.0 — 24/09/2026
 
 Primera extracción, desde `kivcode-web`.

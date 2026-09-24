@@ -35,7 +35,7 @@ y `pnpm check` es la puerta.
 | `@kivcode/base/schemas/content` | `seoSummary`, `faqSchema`, `draftFlag`, `publishedFlag`, `iconEnum` |
 | `@kivcode/base/content` | `esVisible`, `estaPublicado`, `porOrden`, `porAño` |
 | `@kivcode/base/forms` | `attachContactForms()` — el comportamiento del formulario |
-| `@kivcode/base/icons` | `BASE_ICONS` — el set genérico, para extender |
+| `@kivcode/base/icons` | `BASE_STROKE` y `WHATSAPP_PATH` — el set genérico, para extender |
 | `@kivcode/base/styles/base.css` | `container-page` y `prose-body` |
 | `@kivcode/base/astro` | `baseConfig()` — la configuración de Astro compartida |
 | `@kivcode/base/integrations/headers` | Escribe `_headers` con la CSP al compilar |
