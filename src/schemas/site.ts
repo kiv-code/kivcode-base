@@ -43,6 +43,22 @@ export const ownerSchema = z.discriminatedUnion('type', [
     ruc: rucSchema.optional(),
   }),
 
+  /**
+   * Los datos legales todavía no llegaron. Es un estado real del estudio: casi
+   * siempre se construye el sitio antes de que el cliente mande razón social y
+   * RUC, y la alternativa —poner un nombre de relleno— publica una mentira que
+   * nadie vuelve a mirar.
+   *
+   * Modelarlo tiene dos efectos: la página de privacidad muestra un aviso
+   * visible en vez de un dato falso, y el día que llegan los datos el cambio
+   * es una línea que el esquema valida.
+   */
+  z.strictObject({
+    type: z.literal('pendiente'),
+    /** Qué falta y a quién pedírselo. Sale publicado: que incomode es el punto. */
+    nota: z.string().min(1),
+  }),
+
   z.strictObject({
     type: z.literal('empresa'),
     /** Razón social exacta, como figura en SUNAT. */
@@ -121,5 +137,11 @@ export const whatsappLink = (site: Site, message?: string): string => {
 export const placeLabel = (site: Site): string => `${site.locality}, ${site.countryName}`;
 
 /** El nombre con el que se presenta legalmente, según el tipo de titular. */
-export const ownerLabel = (owner: Owner): string =>
-  owner.type === 'empresa' ? owner.legalName : owner.name;
+export const ownerLabel = (owner: Owner): string => {
+  if (owner.type === 'empresa') return owner.legalName;
+  if (owner.type === 'persona') return owner.name;
+  return owner.nota;
+};
+
+/** ¿Faltan los datos legales? Para que la página de privacidad lo diga. */
+export const ownerPendiente = (owner: Owner): boolean => owner.type === 'pendiente';

@@ -4,6 +4,17 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.3.0 — 24/09/2026
+
+- **Tercer titular posible: `pendiente`.** Los datos legales del cliente casi
+  siempre llegan después de que el sitio está construido, y hasta ahora la
+  única salida era escribir un nombre de relleno que nadie volvía a mirar.
+  Ahora es un estado del esquema, con una `nota` que explica qué falta y que
+  **sale publicada en la página de privacidad**: que incomode es el punto.
+
+  Cuando llegan los datos, pasar a `empresa` o `persona` es una línea, y el
+  esquema valida lo que corresponda —incluido el dígito verificador del RUC—.
+
 ## v1.2.0 — 24/09/2026
 
 - **La CSP permite el beacon de Cloudflare Web Analytics, encendido por
