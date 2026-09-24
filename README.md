@@ -37,6 +37,9 @@ y `pnpm check` es la puerta.
 | `@kivcode/base/forms` | `attachContactForms()` — el comportamiento del formulario |
 | `@kivcode/base/icons` | `BASE_ICONS` — el set genérico, para extender |
 | `@kivcode/base/styles/base.css` | `container-page` y `prose-body` |
+| `@kivcode/base/astro` | `baseConfig()` — la configuración de Astro compartida |
+| `@kivcode/base/integrations/headers` | Escribe `_headers` con la CSP al compilar |
+| `@kivcode/base/routes/robots` | `robots.txt` con el sitemap del dominio real |
 | `@kivcode/base/tsconfig` · `/prettier` | Configuración, para `extends` |
 | `kivcode-check-theme` | Comando que verifica el contrato de tokens |
 
@@ -53,6 +56,14 @@ export default createWorker({ site: SITE, subjects: SUBJECTS });
 // src/config/site.ts — la forma la pone la base, los valores el sitio
 import { siteSchema } from '@kivcode/base/schemas/site';
 export const SITE = siteSchema.parse({ name: '…', owner: { type: 'empresa', … } });
+```
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import { baseConfig } from '@kivcode/base/astro';
+export default defineConfig(baseConfig({ site: SITE_URL }));
+// Y public/_headers se BORRA: lo genera la base en cada build.
 ```
 
 ```json

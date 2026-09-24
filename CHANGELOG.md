@@ -24,4 +24,15 @@ Primera extracción, desde `kivcode-web`.
 - `kivcode-check-theme`: verifica que el `@theme` del sitio defina los tokens
   que las utilidades de la base dan por hechos.
 - Flujo de CI como *reusable workflow*.
+- `baseConfig()` para `astro.config.mjs`: salida estática, barra final,
+  sitemap, Tailwind y la regla que impide incrustar fuentes como `data:` URI.
+- Integración que **genera `public/_headers`** al compilar, con la CSP como
+  valor por defecto y orígenes añadibles por directiva. Verificado: produce una
+  política idéntica byte a byte a la que tenía kivcode-web a mano. Al migrar,
+  el sitio **borra** su `public/_headers`.
+- `robots.txt` como ruta reexportable.
 - Plantillas de `.env.example` y `.dev.vars.example`.
+
+**El menú móvil NO entra**, aunque `LIMITE.md` lo había anotado. Un `<details>`
+sin clases no sirve: lo compartible sería el maquetado, o sea diseño. El
+conocimiento que importa ya está en la costura nº 16.

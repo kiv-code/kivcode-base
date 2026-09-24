@@ -13,14 +13,25 @@
     "./icons": "./src/icons/registry.ts",
     "./styles/base.css": "./src/styles/base.css",
     "./tsconfig": "./tsconfig.json",
-    "./prettier": "./prettier.json"
+    "./prettier": "./prettier.json",
+    "./astro": "./src/integrations/config.mjs",
+    "./integrations/headers": "./src/integrations/headers.mjs",
+    "./routes/robots": "./src/routes/robots.ts"
   },
   "bin": {
     "kivcode-check-theme": "./bin/check-theme.mjs"
   },
-  "files": ["src", "bin", "templates", "tsconfig.json", "prettier.json"],
+  "files": [
+    "src",
+    "bin",
+    "templates",
+    "tsconfig.json",
+    "prettier.json"
+  ],
   "peerDependencies": {
-    "astro": ">=7"
+    "astro": ">=7",
+    "@astrojs/sitemap": ">=3",
+    "@tailwindcss/vite": ">=4"
   },
   "engines": {
     "node": ">=22.12.0"
