@@ -5,6 +5,11 @@ export interface HeadersOptions {
   añadir?: Record<string, string[]>;
   /** Reglas extra al final del archivo, tal cual. */
   extra?: string;
+  /**
+   * Permite el beacon de Cloudflare Web Analytics. Encendido por defecto: la
+   * analítica es parte del negocio en todos los sitios del estudio.
+   */
+  analiticaCloudflare?: boolean;
 }
 
 export function cloudflareHeaders(options?: HeadersOptions): AstroIntegration;

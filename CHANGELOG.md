@@ -4,6 +4,21 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.2.0 — 24/09/2026
+
+- **La CSP permite el beacon de Cloudflare Web Analytics, encendido por
+  defecto.** Sin esos dos orígenes el navegador lo bloquea y el sitio anda pero
+  no hay métricas: no sabés si está trayendo consultas. Viene activado porque la
+  analítica es parte del negocio en todos los sitios del estudio — si hubiera que
+  acordarse de encenderla, tarde o temprano un sitio saldría sin ella y nadie lo
+  notaría hasta querer mirar los números.
+
+  Se apaga por sitio con `headers: { analiticaCloudflare: false }`, para el
+  cliente que pida cero terceros.
+
+  **A mano en cada sitio ya desplegado:** ninguno. Se actualiza con `pnpm update`
+  y se vuelve a desplegar.
+
 ## v1.1.2 — 24/09/2026
 
 - **`iconEnum` perdía los tipos literales** y devolvía `string`: cualquier

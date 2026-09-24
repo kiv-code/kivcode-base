@@ -26,6 +26,35 @@ const CSP_BASE = {
   'connect-src': ["'self'", 'https://challenges.cloudflare.com'],
 };
 
+/**
+ * Cloudflare inyecta solo el beacon de Web Analytics en el HTML cuando la zona
+ * lo tiene activado. Sin estos dos orígenes el navegador lo bloquea y no hay
+ * métricas — el sitio anda, pero no sabés si está trayendo consultas.
+ *
+ * Viene encendido por defecto porque la analítica es parte del negocio en todos
+ * los sitios del estudio: si hubiera que acordarse de activarla, tarde o
+ * temprano un sitio saldría sin ella y nadie lo notaría hasta querer mirar los
+ * números. No usa cookies ni rastrea entre sitios.
+ *
+ * Se apaga con `analiticaCloudflare: false` cuando el sitio no la quiera —por
+ * ejemplo si el cliente pide cero terceros—. Permitir el origen sin que la zona
+ * tenga la analítica activada no carga nada: la política solo autoriza.
+ */
+const CSP_ANALITICA = {
+  'script-src': ['https://static.cloudflareinsights.com'],
+  'connect-src': ['https://cloudflareinsights.com'],
+};
+
+const fusionar = (...fuentes) => {
+  const salida = {};
+  for (const fuente of fuentes) {
+    for (const [directiva, valores] of Object.entries(fuente)) {
+      salida[directiva] = [...(salida[directiva] ?? []), ...valores];
+    }
+  }
+  return salida;
+};
+
 const componerCsp = (añadir = {}) =>
   Object.entries(CSP_BASE)
     .map(([directiva, valores]) => {
@@ -40,7 +69,9 @@ const componerCsp = (añadir = {}) =>
     )
     .join('; ');
 
-export function cloudflareHeaders({ añadir = {}, extra = '' } = {}) {
+export function cloudflareHeaders({ añadir = {}, extra = '', analiticaCloudflare = true } = {}) {
+  const orígenes = analiticaCloudflare ? fusionar(CSP_ANALITICA, añadir) : añadir;
+
   return {
     name: '@kivcode/base:headers',
     hooks: {
@@ -55,7 +86,7 @@ export function cloudflareHeaders({ añadir = {}, extra = '' } = {}) {
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: ${componerCsp(añadir)}
+  Content-Security-Policy: ${componerCsp(orígenes)}
 
 # Los archivos de _astro llevan hash en el nombre: si cambia el contenido,
 # cambia la URL. Se pueden cachear para siempre sin riesgo.
