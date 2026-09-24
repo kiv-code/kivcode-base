@@ -4,6 +4,18 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.1.1 — 24/09/2026
+
+Dos fallos que solo aparecen cuando un sitio real lo usa.
+
+- **El `tsconfig` de la base ya no trae `include`.** Un `include` heredado se
+  resuelve contra el archivo que lo define, o sea contra `node_modules`: el
+  sitio pasaba de revisar 34 archivos a revisar 10 y `pnpm check` seguía en
+  verde. Un error de tipos en una página habría pasado la puerta sin que nada
+  avisara. **Cada sitio declara su propio `include` y `exclude`.**
+- Declaraciones de tipos para los módulos `.mjs` (worker, integraciones), que
+  salían como `any` implícito.
+
 ## v1.1.0 — 24/09/2026
 
 Ajuste salido de la primera migración, exactamente para lo que sirve versionar.
