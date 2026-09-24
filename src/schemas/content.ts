@@ -35,4 +35,6 @@ export const faqSchema = z.object({
  *   const icon = iconEnum(ICONS);
  */
 export const iconEnum = <T extends Record<string, unknown>>(registry: T) =>
-  z.enum(Object.keys(registry) as [string, ...string[]]);
+  z.enum(
+    Object.keys(registry) as [Extract<keyof T, string>, ...Extract<keyof T, string>[]],
+  );

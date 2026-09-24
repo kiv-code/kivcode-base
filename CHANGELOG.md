@@ -4,6 +4,13 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.1.2 — 24/09/2026
+
+- **`iconEnum` perdía los tipos literales** y devolvía `string`: cualquier
+  cadena pasaba como nombre de icono y se caía el único punto de la costura
+  nº 8, que era que un nombre inventado rompiera el build. Ahora conserva las
+  claves del registro como unión.
+
 ## v1.1.1 — 24/09/2026
 
 Dos fallos que solo aparecen cuando un sitio real lo usa.
