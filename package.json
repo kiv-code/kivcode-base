@@ -1,0 +1,28 @@
+{
+  "name": "@kivcode/base",
+  "version": "1.0.0",
+  "description": "Infraestructura compartida de los sitios del estudio KivCode. Sin diseño: el diseño es de cada cliente.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    "./worker": "./src/worker/index.mjs",
+    "./schemas/site": "./src/schemas/site.ts",
+    "./schemas/content": "./src/schemas/content.ts",
+    "./content": "./src/content/filters.ts",
+    "./forms": "./src/forms/contact.ts",
+    "./icons": "./src/icons/registry.ts",
+    "./styles/base.css": "./src/styles/base.css",
+    "./tsconfig": "./tsconfig.json",
+    "./prettier": "./prettier.json"
+  },
+  "bin": {
+    "kivcode-check-theme": "./bin/check-theme.mjs"
+  },
+  "files": ["src", "bin", "templates", "tsconfig.json", "prettier.json"],
+  "peerDependencies": {
+    "astro": ">=7"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

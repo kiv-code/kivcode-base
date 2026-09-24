@@ -1,0 +1,11 @@
+# Nombres de los secretos del Worker. Este archivo existe para que la LISTA
+# quede en el repositorio — que es lo que uno olvida, no los valores.
+#
+# En producción no se usa: allá van con `wrangler secret put <NOMBRE>`.
+# Si al Worker le falta cualquiera de los tres, responde 503 con un mensaje
+# amable en vez de reventar. Ojo: eso hace que un formulario roto por secretos
+# faltantes se vea igual que uno caído.
+
+RESEND_API_KEY=
+CONTACT_FROM_EMAIL=
+TURNSTILE_SECRET_KEY=

@@ -1,0 +1,50 @@
+# Flujo de despliegue compartido. Los sitios NO copian esto: lo invocan.
+#
+#   jobs:
+#     deploy:
+#       uses: kiv-code/kivcode-base/.github/workflows/deploy.yml@v1
+#       secrets: inherit
+#
+# Así un arreglo acá llega a todos los sitios sin tocar ninguno — es la única
+# pieza de la base que se actualiza sola, sin `pnpm update`.
+name: Desplegar a Cloudflare
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '24'
+
+concurrency:
+  # Si llegan dos pushes seguidos, gana el último: no queremos despliegues cruzados.
+  group: deploy-production-${{ github.repository }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Si los tipos, el esquema de contenido o el contrato de tokens fallan,
+      # no se publica nada.
+      - run: pnpm check
+
+      - run: pnpm build
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
+
+      # Usamos el wrangler del proyecto, no una acción de terceros: una
+      # dependencia menos y la misma versión que en tu máquina.
+      - run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
