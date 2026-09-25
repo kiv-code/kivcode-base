@@ -131,7 +131,10 @@ export type Subjects = z.infer<typeof subjectsSchema>;
 const digits = (value: string): string => value.replace(/\D/g, '');
 
 /** Enlace `tel:` derivado del teléfono publicado. */
-export const phoneLink = (site: Site): string => `tel:+${digits(site.phone)}`;
+export const telLink = (phone: string): string => `tel:+${digits(phone)}`;
+
+/** Enlace `tel:` del teléfono principal. */
+export const phoneLink = (site: Site): string => telLink(site.phone);
 
 /** Enlace de WhatsApp, con mensaje precargado opcional según el contexto del clic. */
 export const whatsappLink = (site: Site, message?: string): string => {

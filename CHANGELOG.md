@@ -4,6 +4,12 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.5.1 — 24/09/2026
+
+- `telLink(phone)`, que v1.4.0 anunciaba y no llegó a publicar: el parche que lo
+  agregaba no coincidió con el archivo y nadie se enteró hasta que un sitio lo
+  importó. Sirve para enlazar el segundo teléfono.
+
 ## v1.5.0 — 24/09/2026
 
 - **Varios formularios por sitio.** `createWorker({ forms })` declara una
