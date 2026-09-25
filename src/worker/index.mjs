@@ -60,8 +60,22 @@ async function readForm(request) {
  * @param {{ name: string, email: string }} config.site
  * @param {Record<string, string>} config.subjects  valor → etiqueta legible
  * @param {string} [config.turnstileAction]  debe coincidir con el `action` del widget
+ * @param {{name: string, label: string, max?: number, required?: boolean}[]} [config.extraFields]
+ *        Campos propios del formulario, que se anexan al correo. Existen porque
+ *        no todos los formularios son «contacto»: un libro de reclamaciones
+ *        pide DNI, tipo de solicitud y pedido del consumidor, y sin esto habría
+ *        que escribir un Worker aparte por cada uno.
+ * @param {string} [config.subjectPrefix]  encabezado del asunto. Por defecto «Consulta».
+ * @param {string} [config.successMessage]
  */
-export function createContactHandler({ site, subjects, turnstileAction = 'contact' }) {
+export function createContactHandler({
+  site,
+  subjects,
+  turnstileAction = 'contact',
+  extraFields = [],
+  subjectPrefix = 'Consulta',
+  successMessage = 'Consulta recibida. Te respondemos en menos de 24 horas.',
+}) {
   return async function handleContact(request, env, send = fetch) {
     if (request.method !== 'POST') {
       return json(405, 'Utiliza el formulario para enviar tu consulta.', { Allow: 'POST' });
@@ -102,7 +116,20 @@ export function createContactHandler({ site, subjects, turnstileAction = 'contac
     const message = get('message');
     const token = get('cf-turnstile-response');
 
+    // Campos propios de este formulario. Se validan con el mismo criterio que
+    // los de la base: existir si son obligatorios y no pasarse de largo.
+    const extras = extraFields.map((campo) => ({
+      ...campo,
+      valor: get(campo.name),
+    }));
+
+    const extraInvalido = extras.some(
+      (campo) =>
+        (campo.required && !campo.valor) || campo.valor.length > (campo.max ?? 200),
+    );
+
     if (
+      extraInvalido ||
       name.length < 2 ||
       name.length > 100 ||
       /[\r\n]/.test(name) ||
@@ -187,13 +214,14 @@ export function createContactHandler({ site, subjects, turnstileAction = 'contac
           from: env.CONTACT_FROM_EMAIL,
           to: [site.email],
           reply_to: email,
-          subject: `Consulta ${site.name} · ${subjects[service]}`,
+          subject: `${subjectPrefix} ${site.name} · ${subjects[service]}`,
           text: [
             `Nombre: ${name}`,
             `Correo: ${email}`,
             `Empresa: ${company || 'No indicada'}`,
             `Teléfono: ${phone || 'No indicado'}`,
             `Motivo: ${subjects[service]}`,
+            ...extras.map((campo) => `${campo.label}: ${campo.valor || 'No indicado'}`),
             '',
             message,
             '',
@@ -209,21 +237,43 @@ export function createContactHandler({ site, subjects, turnstileAction = 'contac
       const receipt = await result.json();
       if (typeof receipt.id !== 'string' || !receipt.id) return json(502, UNAVAILABLE);
 
-      return json(200, 'Consulta recibida. Te respondemos en menos de 24 horas.');
+      return json(200, successMessage);
     } catch {
       return json(502, UNAVAILABLE);
     }
   };
 }
 
-/** El Worker completo: atiende /api/contact y delega todo lo demás al CDN. */
-export function createWorker(config) {
-  const handleContact = createContactHandler(config);
+/**
+ * El Worker completo: atiende sus formularios y delega todo lo demás al CDN.
+ *
+ * Un sitio con un solo formulario pasa `subjects` y listo. Uno con varios
+ * —contacto y libro de reclamaciones, por ejemplo— los declara en `forms`:
+ *
+ *   createWorker({
+ *     site: SITE,
+ *     forms: {
+ *       '/api/contact': { subjects: SUBJECTS },
+ *       '/api/reclamaciones': { subjects: SERVICIOS, extraFields: [...] },
+ *     },
+ *   });
+ */
+export function createWorker({ forms, ...config }) {
+  const declarados = forms ?? { '/api/contact': {} };
+
+  const handlers = Object.entries(declarados).map(([ruta, propio]) => [
+    ruta.replace(/\/$/, ''),
+    createContactHandler({ ...config, ...propio }),
+  ]);
 
   return {
     async fetch(request, env) {
-      const path = new URL(request.url).pathname;
-      if (path === '/api/contact' || path === '/api/contact/') return handleContact(request, env);
+      const path = new URL(request.url).pathname.replace(/\/$/, '') || '/';
+
+      for (const [ruta, handler] of handlers) {
+        if (path === ruta) return handler(request, env);
+      }
+
       if (path.startsWith('/api/')) return json(404, 'Ruta no encontrada.');
       return env.ASSETS.fetch(request);
     },

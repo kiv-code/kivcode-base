@@ -1,6 +1,6 @@
 {
   "name": "@kivcode/base",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Infraestructura compartida de los sitios del estudio KivCode. Sin diseño: el diseño es de cada cliente.",
   "type": "module",
   "license": "MIT",

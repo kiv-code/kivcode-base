@@ -4,6 +4,20 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.5.0 — 24/09/2026
+
+- **Varios formularios por sitio.** `createWorker({ forms })` declara una
+  configuración por ruta. Salió del Libro de Reclamaciones de vexcom, que es
+  obligatorio por ley en Perú y pide campos que un formulario de contacto no
+  tiene.
+- **`extraFields`**: campos propios que se validan y se anexan al correo. Sin
+  esto habría que escribir un Worker por cada formulario, y toda la protección
+  —honeypot, tope de cuerpo, límite por IP, Turnstile— se duplicaría.
+- `subjectPrefix` y `successMessage` configurables por formulario.
+
+El uso de siempre no cambia: `createWorker({ site, subjects })` sigue
+atendiendo `/api/contact`.
+
 ## v1.4.0 — 24/09/2026
 
 - **`phoneAlt` opcional**, para las empresas que publican dos líneas. Opcional y
