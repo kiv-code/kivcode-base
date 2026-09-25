@@ -4,6 +4,14 @@ Formato: qué cambió y **qué tiene que hacer cada sitio**. Si una línea dice
 «a mano», es de las piezas que no pueden heredarse y hay que tocarlas en cada
 repositorio.
 
+## v1.4.0 — 24/09/2026
+
+- **`phoneAlt` opcional**, para las empresas que publican dos líneas. Opcional y
+  no obligatorio: la mayoría tiene una sola, y un campo vacío obligatorio es un
+  campo muerto esperando a publicarse mal.
+- `telLink(phone)` para construir el enlace de cualquier número, no solo del
+  principal. `phoneLink(site)` sigue igual.
+
 ## v1.3.0 — 24/09/2026
 
 - **Tercer titular posible: `pendiente`.** Los datos legales del cliente casi

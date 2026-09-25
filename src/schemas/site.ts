@@ -93,6 +93,12 @@ export const siteSchema = z.object({
   /** En el formato que lee una persona: «+51 926 062 640». Los enlaces `tel:` y
    *  `wa.me` se derivan de acá. Nunca se guarda el mismo número dos veces. */
   phone: z.string().min(1),
+  /**
+   * Segunda línea, cuando la empresa publica dos. Opcional: la mayoría tiene
+   * una sola, y un campo vacío obligatorio es un campo muerto esperando a
+   * publicarse mal. (COSTURAS nº 14)
+   */
+  phoneAlt: z.string().min(1).optional(),
 
   /**
    * El lugar, descompuesto. Acá sí por separado: los datos estructurados de
